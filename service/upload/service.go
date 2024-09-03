@@ -8,19 +8,17 @@ import (
 	"github.com/google/uuid"
 	"gofr.dev/pkg/gofr"
 
-	"kops-deploy-service/client"
 	"kops-deploy-service/models"
 )
 
 type service struct {
-	credSvc client.CredentialFetcher
 }
 
-func New(credSvc client.CredentialFetcher) *service {
-	return &service{credSvc: credSvc}
+func New() *service {
+	return &service{}
 }
 
-func (s *service) UploadToArtifactory(ctx *gofr.Context, img *models.Image) (string, error) {
+func (s *service) UploadToArtifactory(ctx *gofr.Context, img *models.ImageDetails) (string, error) {
 	dir := getUniqueDir()
 
 	err := img.Data.CreateLocalCopies(dir)
@@ -28,12 +26,7 @@ func (s *service) UploadToArtifactory(ctx *gofr.Context, img *models.Image) (str
 		return "", err
 	}
 
-	creds, err := s.credSvc.GetServiceCreds(ctx, img.ServiceID)
-	if err != nil {
-		return "", err
-	}
-
-	path, err := pushImage(ctx, img, creds, dir)
+	path, err := pushImage(ctx, img, dir)
 	if err != nil {
 		return "", err
 	}
@@ -43,15 +36,15 @@ func (s *service) UploadToArtifactory(ctx *gofr.Context, img *models.Image) (str
 	return path, nil
 }
 
-func pushImage(ctx *gofr.Context, img *models.Image, cred *models.Credentials, path string) (string, error) {
+func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string, error) {
 	var (
 		imagePath string
 		auth      *authn.Basic
 	)
 
-	switch cred.CloudPlatform {
+	switch img.CloudPlatform {
 	case GCP:
-		googleReg, err := NewGCR(cred)
+		googleReg, err := NewGCR(img)
 		if err != nil {
 			return "", err
 		}

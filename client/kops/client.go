@@ -5,12 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 
 	gofrSvc "gofr.dev/pkg/gofr/service"
-
-	"kops-deploy-service/models"
 )
 
 type client struct {
@@ -19,31 +16,6 @@ type client struct {
 
 func New(svc gofrSvc.HTTP) *client {
 	return &client{kopsSvc: svc}
-}
-
-func (c *client) GetServiceCreds(ctx context.Context, serviceID string) (*models.Credentials, error) {
-	var data models.Response
-
-	api := fmt.Sprintf("service/%s/service-credentials", serviceID)
-
-	resp, err := c.kopsSvc.Get(ctx, api, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	raw, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	err = json.Unmarshal(raw, &data)
-	if err != nil {
-		return nil, err
-	}
-
-	return &data.Data, nil
 }
 
 type imageUpdate struct {

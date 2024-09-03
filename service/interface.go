@@ -7,7 +7,7 @@ import (
 )
 
 type ImageUploader interface {
-	UploadToArtifactory(ctx *gofr.Context, img *models.Image) (string, error)
+	UploadToArtifactory(ctx *gofr.Context, img *models.ImageDetails) (string, error)
 }
 
 type ImageDeployer interface {

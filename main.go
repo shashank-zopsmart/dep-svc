@@ -17,7 +17,7 @@ func main() {
 		&gofrSvc.APIKeyConfig{APIKey: app.Config.Get("KOPS_API_KEY")})
 
 	kopsSvc := kops.New(kopsClient)
-	uploadSvc := upload.New(kopsSvc)
+	uploadSvc := upload.New()
 	deploySvc := depSvc.New(kopsSvc)
 
 	deployHndlr := deploy.New(uploadSvc, deploySvc)

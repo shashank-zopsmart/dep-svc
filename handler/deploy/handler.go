@@ -20,7 +20,7 @@ func New(uploadSvc service.ImageUploader, deploySvc service.ImageDeployer) *hand
 }
 
 func (h *handler) UploadImage(ctx *gofr.Context) (interface{}, error) {
-	var img models.Image
+	var img models.ImageDetails
 
 	if err := ctx.Bind(&img); err != nil {
 		return nil, err

@@ -20,8 +20,8 @@ type gcr struct {
 	creds *models.GCPCreds
 }
 
-func NewGCR(creds *models.Credentials) (*gcr, error) {
-	gcpCreds, ok := creds.ServiceAccCred.(models.GCPCreds)
+func NewGCR(creds *models.ImageDetails) (*gcr, error) {
+	gcpCreds, ok := creds.ServiceCreds.(models.GCPCreds)
 	if !ok {
 		return nil, errIncorrectCloud
 	}
@@ -29,7 +29,7 @@ func NewGCR(creds *models.Credentials) (*gcr, error) {
 	return &gcr{creds: &gcpCreds}, nil
 }
 
-func (g *gcr) getImagePath(img *models.Image) string {
+func (g *gcr) getImagePath(img *models.ImageDetails) string {
 	return fmt.Sprintf("%s-docker.pkg.dev/%s/%s/%s:%s", img.Region, g.creds.ProjectID, img.Repository, img.Name, img.Tag)
 }
 
