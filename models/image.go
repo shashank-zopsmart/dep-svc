@@ -18,6 +18,5 @@ type ServiceDetails struct {
 	LoginServer   string `form:"loginServer"`
 	ServiceName   string `form:"serviceName"`
 	AccountID     string `form:"accountID"`
-	NameSpace     string `form:"nameSpace"`
 	CloudPlatform string `form:"cloudPlatform"`
 }
