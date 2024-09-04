@@ -26,7 +26,7 @@ type imageUpdate struct {
 var errService = errors.New("non OK status code received")
 
 func (c *client) UpdateImage(ctx context.Context, serviceId, imageURL string, serviceCreds any) error {
-	api := fmt.Sprintf("service/%s/image", serviceId)
+	api := fmt.Sprintf("cli/service/%s/image", serviceId)
 
 	payload, _ := json.Marshal(imageUpdate{Image: imageURL, DeploymentKey: serviceCreds})
 
