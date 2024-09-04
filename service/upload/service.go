@@ -7,6 +7,8 @@ import (
 	"github.com/google/go-containerregistry/pkg/v1/tarball"
 	"github.com/google/uuid"
 	"gofr.dev/pkg/gofr"
+	"os"
+	"strings"
 
 	"kops-deploy-service/models"
 )
@@ -20,6 +22,7 @@ func New() *service {
 
 func (s *service) UploadToArtifactory(ctx *gofr.Context, img *models.ImageDetails) (string, error) {
 	dir := getUniqueDir()
+	defer os.RemoveAll(dir)
 
 	err := img.Data.CreateLocalCopies(dir)
 	if err != nil {
@@ -42,7 +45,7 @@ func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string
 		auth      *authn.Basic
 	)
 
-	switch img.CloudPlatform {
+	switch strings.ToUpper(img.CloudProvider) {
 	case GCP:
 		googleReg, err := NewGCR(img)
 		if err != nil {
@@ -51,6 +54,17 @@ func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string
 
 		imagePath = googleReg.getImagePath(img)
 		auth, err = googleReg.getAuth(ctx)
+		if err != nil {
+			return "", err
+		}
+	case AWS:
+		awsReg, err := NewECR(img)
+		if err != nil {
+			return "", err
+		}
+
+		imagePath = awsReg.getImagePath(img)
+		auth, err = awsReg.getAuth(ctx, &img.ServiceDetails)
 		if err != nil {
 			return "", err
 		}

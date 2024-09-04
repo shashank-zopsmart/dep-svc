@@ -32,7 +32,7 @@ func (h *handler) UploadImage(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	err = h.deploySvc.DeployImage(ctx, img.ServiceID, imageURL)
+	err = h.deploySvc.DeployImage(ctx, img.ServiceID, imageURL, img.ServiceCreds)
 	if err != nil {
 		return nil, err
 	}

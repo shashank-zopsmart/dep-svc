@@ -5,5 +5,5 @@ import (
 )
 
 type ServiceImageUpdater interface {
-	UpdateImage(ctx context.Context, serviceId, imageURL string) error
+	UpdateImage(ctx context.Context, serviceId, imageURL string, serviceCreds any) error
 }

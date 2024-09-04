@@ -11,5 +11,5 @@ type ImageUploader interface {
 }
 
 type ImageDeployer interface {
-	DeployImage(ctx *gofr.Context, serviceID, imageURL string) error
+	DeployImage(ctx *gofr.Context, serviceID, imageURL string, serviceCreds any) error
 }

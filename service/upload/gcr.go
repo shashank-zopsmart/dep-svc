@@ -14,23 +14,32 @@ import (
 
 const GCP = "GCP"
 
-var errIncorrectCloud = errors.New("")
+var errIncorrectCloud = errors.New("could not fetch proper credential details for service")
 
 type gcr struct {
 	creds *models.GCPCreds
 }
 
 func NewGCR(creds *models.ImageDetails) (*gcr, error) {
-	gcpCreds, ok := creds.ServiceCreds.(models.GCPCreds)
+	var gcpCreds models.GCPCreds
+
+	credString, ok := creds.ServiceCreds.(string)
 	if !ok {
 		return nil, errIncorrectCloud
 	}
+
+	err := json.Unmarshal([]byte(credString), &gcpCreds)
+	if err != nil {
+		return nil, errIncorrectCloud
+	}
+
+	creds.ServiceCreds = gcpCreds
 
 	return &gcr{creds: &gcpCreds}, nil
 }
 
 func (g *gcr) getImagePath(img *models.ImageDetails) string {
-	return fmt.Sprintf("%s-docker.pkg.dev/%s/%s/%s:%s", img.Region, g.creds.ProjectID, img.Repository, img.Name, img.Tag)
+	return fmt.Sprintf("%s-docker.pkg.dev/%s/kops-dev/%s/%s:%s", img.Region, g.creds.ProjectID, img.Repository, img.Name, img.Tag)
 }
 
 func (g *gcr) getAuth(ctx *gofr.Context) (*authn.Basic, error) {

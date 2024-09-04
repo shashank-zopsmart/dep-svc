@@ -13,8 +13,7 @@ import (
 func main() {
 	app := gofr.New()
 
-	kopsClient := gofrSvc.NewHTTPService(app.Config.Get("KOPS_SERVICE_ADDR"), app.Logger(), app.Metrics(),
-		&gofrSvc.APIKeyConfig{APIKey: app.Config.Get("KOPS_API_KEY")})
+	kopsClient := gofrSvc.NewHTTPService(app.Config.Get("KOPS_SERVICE_ADDR"), app.Logger(), app.Metrics())
 
 	kopsSvc := kops.New(kopsClient)
 	uploadSvc := upload.New()
