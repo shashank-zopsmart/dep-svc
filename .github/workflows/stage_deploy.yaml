@@ -3,8 +3,7 @@ name: Build and Deploy for Go service
 on:
   push:
     branches: [ development ]
-  pull_request:
-    branches: [ development ]
+
 
 env:
   APP_NAME: deploy-service
