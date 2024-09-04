@@ -37,5 +37,5 @@ func (h *handler) UploadImage(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	return "Successfully updated", nil
 }
