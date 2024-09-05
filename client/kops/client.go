@@ -1,12 +1,13 @@
 package kops
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 
+	"gofr.dev/pkg/gofr"
 	gofrSvc "gofr.dev/pkg/gofr/service"
 )
 
@@ -18,6 +19,10 @@ func New(svc gofrSvc.HTTP) *client {
 	return &client{kopsSvc: svc}
 }
 
+type errorResp struct {
+	Errors any `json:"errors"`
+}
+
 type imageUpdate struct {
 	Image         string      `json:"image"`
 	DeploymentKey interface{} `json:"deploymentKey"`
@@ -25,7 +30,7 @@ type imageUpdate struct {
 
 var errService = errors.New("non OK status code received")
 
-func (c *client) UpdateImage(ctx context.Context, serviceId, imageURL string, serviceCreds any) error {
+func (c *client) UpdateImage(ctx *gofr.Context, serviceId, imageURL string, serviceCreds any) error {
 	api := fmt.Sprintf("cli/service/%s/image", serviceId)
 
 	payload, _ := json.Marshal(imageUpdate{Image: imageURL, DeploymentKey: serviceCreds})
@@ -38,6 +43,13 @@ func (c *client) UpdateImage(ctx context.Context, serviceId, imageURL string, se
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
+		var er errorResp
+
+		b, _ := io.ReadAll(resp.Body)
+		_ = json.Unmarshal(b, &er)
+
+		ctx.Logger.Errorf("error response from kops api, err : %v", er)
+
 		return errService
 	}
 

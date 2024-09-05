@@ -1,9 +1,7 @@
 package client
 
-import (
-	"context"
-)
+import "gofr.dev/pkg/gofr"
 
 type ServiceImageUpdater interface {
-	UpdateImage(ctx context.Context, serviceId, imageURL string, serviceCreds any) error
+	UpdateImage(ctx *gofr.Context, serviceId, imageURL string, serviceCreds any) error
 }
