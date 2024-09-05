@@ -26,7 +26,7 @@ func main() {
 
 	deployHndlr := deploy.New(uploadSvc, deploySvc)
 
-	app.POST("/deploy", deployHndlr.UploadImage)
+	app.POST("/", deployHndlr.UploadImage)
 
 	app.Run()
 }
