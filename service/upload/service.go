@@ -2,6 +2,7 @@ package upload
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	pkgPath "path"
@@ -196,7 +197,9 @@ func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string
 		return "", err
 	}
 
-	imgTar, err := tarball.ImageFromPath(path+"/temp/"+img.Name+img.Tag+".tar", nil)
+	filepath := pkgPath.Join(path, img.ModuleName, fmt.Sprintf("%s:%s.tar", img.Name, img.Tag))
+
+	imgTar, err := tarball.ImageFromPath(filepath, nil)
 	if err != nil {
 		return "", err
 	}

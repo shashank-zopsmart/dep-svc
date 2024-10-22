@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os/exec"
-
 	"gofr.dev/pkg/gofr"
 	gofrSvc "gofr.dev/pkg/gofr/service"
 
@@ -16,9 +14,6 @@ import (
 
 func main() {
 	app := gofr.New()
-
-	op, err := exec.Command("docker", "ps").CombinedOutput()
-	app.Logger().Errorf("%s : %v", string(op), err)
 
 	kopsClient := gofrSvc.NewHTTPService(app.Config.Get("KOPS_SERVICE_URL"), app.Logger(), app.Metrics(),
 		&gofrSvc.DefaultHeaders{
@@ -40,7 +35,7 @@ func main() {
 
 	deployHndlr := deploy.New(uploadSvc, deploySvc)
 
-	app.POST("/deploy", deployHndlr.UploadImage)
+	app.POST("/", deployHndlr.UploadImage)
 
 	app.Run()
 }
