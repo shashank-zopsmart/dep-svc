@@ -1,11 +1,9 @@
 package main
 
 import (
+	"github.com/docker/docker/client"
 	"gofr.dev/pkg/gofr"
 	gofrSvc "gofr.dev/pkg/gofr/service"
-
-	"github.com/docker/docker/client"
-
 	"kops-deploy-service/client/kops"
 	"kops-deploy-service/handler/deploy"
 	depSvc "kops-deploy-service/service/deploy"
@@ -13,6 +11,7 @@ import (
 )
 
 func main() {
+	//os.Setenv("DOCKER_HOST", "unix:///Users/raramuri/.colima/default/docker.sock")
 	app := gofr.New()
 
 	kopsClient := gofrSvc.NewHTTPService(app.Config.Get("KOPS_SERVICE_URL"), app.Logger(), app.Metrics(),
@@ -35,7 +34,7 @@ func main() {
 
 	deployHndlr := deploy.New(uploadSvc, deploySvc)
 
-	app.POST("/", deployHndlr.UploadImage)
+	app.POST("/deploy", deployHndlr.UploadImage)
 
 	app.Run()
 }
