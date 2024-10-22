@@ -2,22 +2,23 @@ package upload
 
 import (
 	"encoding/json"
-	"github.com/docker/docker/client"
-	"github.com/google/go-containerregistry/pkg/authn"
-	"github.com/google/go-containerregistry/pkg/name"
-	"github.com/google/go-containerregistry/pkg/v1/remote"
-	"github.com/google/go-containerregistry/pkg/v1/tarball"
-	"github.com/google/uuid"
-	"gofr.dev/pkg/gofr"
 	"io"
 	"os"
 	pkgPath "path"
 	"strings"
 
-	"kops-deploy-service/models"
+	"gofr.dev/pkg/gofr"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/archive"
+	"github.com/google/go-containerregistry/pkg/authn"
+	"github.com/google/go-containerregistry/pkg/name"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"github.com/google/go-containerregistry/pkg/v1/tarball"
+	"github.com/google/uuid"
+
+	"kops-deploy-service/models"
 )
 
 type service struct {
@@ -171,6 +172,7 @@ func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string
 		}
 
 		imagePath = googleReg.getImagePath(img)
+
 		auth, err = googleReg.getAuth(ctx)
 		if err != nil {
 			return "", err
@@ -182,6 +184,7 @@ func pushImage(ctx *gofr.Context, img *models.ImageDetails, path string) (string
 		}
 
 		imagePath = awsReg.getImagePath(img)
+
 		auth, err = awsReg.getAuth(ctx, &img.ServiceDetails)
 		if err != nil {
 			return "", err

@@ -2,9 +2,10 @@ package upload
 
 import (
 	"fmt"
-	"gofr.dev/pkg/gofr/logging"
 	"os"
 	"os/exec"
+
+	"gofr.dev/pkg/gofr/logging"
 )
 
 const (

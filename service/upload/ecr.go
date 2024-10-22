@@ -73,6 +73,7 @@ func (e *ecr) getAuth(ctx *gofr.Context, sd *models.ServiceDetails) (*authn.Basi
 
 	// Decode the authorization token
 	authToken := *tokenOutput.AuthorizationData[0].AuthorizationToken
+
 	decodedToken, err := base64.StdEncoding.DecodeString(authToken)
 	if err != nil {
 		return nil, err

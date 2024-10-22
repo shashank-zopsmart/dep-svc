@@ -1,22 +1,20 @@
 package main
 
 import (
-	"context"
-	"fmt"
+	"os/exec"
+
 	"gofr.dev/pkg/gofr"
 	gofrSvc "gofr.dev/pkg/gofr/service"
+
+	"github.com/docker/docker/client"
+
 	"kops-deploy-service/client/kops"
 	"kops-deploy-service/handler/deploy"
 	depSvc "kops-deploy-service/service/deploy"
 	"kops-deploy-service/service/upload"
-	"os"
-	"os/exec"
-
-	"github.com/docker/docker/client"
 )
 
 func main() {
-	os.Setenv("DOCKER_HOST", fmt.Sprintf("unix:///Users/raramuri/.colima/default/docker.sock"))
 	app := gofr.New()
 
 	op, err := exec.Command("docker", "ps").CombinedOutput()
@@ -31,14 +29,7 @@ func main() {
 
 	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		app.Logger().Errorf("failed to initialize docker client: %v", err)
-
-		return
-	}
-
-	_, err = dockerClient.Ping(context.Background())
-	if err != nil {
-		app.Logger().Errorf("failed to initialize docker client: %v", err)
+		app.Logger().Errorf("failed to initialise docker client: %v", err)
 
 		return
 	}
